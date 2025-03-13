@@ -11,6 +11,12 @@
 
 2. the images are not of the same size -> done function change them dynamically *has to be tested!!!*
 
+# challeges:
+- class imbalance (for phylum)
+- - image modification to add variavce in the minority classes
+- class number (200 differente species)
+- - wide layers to avoid eccessive information space shrinking
+
 # short term goal
 - binary classification (cordata- not cordata)
 
