@@ -1,0 +1,12 @@
+# REFERENCES
+
+Buslaev, A., Iglovikov, V. I., Khvedchenya, E., Parinov, A., Druzhinin, M., & Kalinin, A. A. (2020). Albumentations: Fast and Flexible Image Augmentations. Information, 11(2), 125. https://doi.org/10.3390/info11020125
+
+In computer vision, image augmentations have become a common implicit regularization technique to combat overfitting in deep learning models and are ubiquitously used to improve performance.
+
+
+### **APA Citation (7th Edition)**  
+Ibraheam, M., Gebali, F., Li, K. F., & Sielecki, L. (2020). **Animal species recognition using deep learning**. In *Proceedings of the International Conference on Artificial Intelligence Applications and Innovations* (pp. 523–532). Springer. https://doi.org/10.1007/978-3-030-44041-1_47  
+
+Abstract
+Wildlife-human and wildlife-vehicle encounters frequently lead to injuries and fatalities, posing risks to both humans and animals. This research aims to mitigate these negative impacts by developing an automated detection system using deep learning techniques. The system is activated when an object enters its field of vision and employs Convolutional Neural Networks (CNNs) to recognize and classify objects. Training is conducted using labeled datasets from the British Columbia Ministry of Transportation and Infrastructure’s (BCMOTI) wildlife program and the Snapshot Wisconsin dataset. The proposed system effectively filters images from these datasets and accurately identifies objects. Results demonstrate a 99.8% accuracy in distinguishing between animals and humans and a 97.6% accuracy in identifying specific animal species. This approach enhances wildlife monitoring and contributes to improved safety measures in human-wildlife interactions.
