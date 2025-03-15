@@ -22,7 +22,7 @@ MIC uses a deep convolutional neural network to classify images of animals. The 
 
 ## 3.1. For Developers
 
-To get started you may build the environment using the requirements.yml file, on your preferred conda workstation, then run the ingestion.py. and read the versioning rules and guidelines section of this document, then finally check out the TODO section.
+To get started you may build the environment using the requirements.yaml file, on your preferred conda workstation, then run the ingestion.py. and read the versioning rules and guidelines section of this document, then finally check out the TODO section.
 
 ## 3.2 For Teachers and others
 
@@ -72,7 +72,7 @@ This directory contains:
 ------------------------------------
 
 # A Naming Conventions
-Naming convention for directories and files should follow ChimeraCase e.g. This_IsChimeraCase.
+Naming convention for directories and files should follow snake_case.
 
 ## 1. Naming Convention for Code Development
 Notebook and Model development scripts naming conventions include:
