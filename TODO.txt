@@ -10,4 +10,7 @@ This is a list of the long, medium, and short term goals of the project
 This is a list of the current challenges the project is facing. Feel free to issue challenges at any moment.
 	
 # TODO_LIST
-This is a bucket list of all current available tasks
+## OPEN
+This is a bucket list of all current tasks being handled by other Contributors
+
+## CURRENT
