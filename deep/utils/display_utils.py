@@ -3,40 +3,32 @@
 import cv2
 import numpy as np
 import tkinter as tk
+from tensorflow import Tensor
 from typing import Tuple, Union, Any
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 
-def get_screen_size(
-) -> Tuple[int, int]:
-    """
-    Returns the screen width and height using tkinter (cross-platform).
-
-    Returns:
-        Tuple[int, int]: (width, height) of the screen.
-    """
-    root = tk.Tk()
-    root.withdraw()  # Hide the main window
-    width = root.winfo_screenwidth()
-    height = root.winfo_screenheight()
-    root.destroy()
-    return width, height
-
-def show_image(image, title):
+def show_image(
+    image_object: Union[str, np.ndarray, Tensor]
+    , title: str
+    ) -> None:
     '''
     Args:
-        image: image file
+        image_object: image file path (string), or image tensor/array
         title: title of the image
     
     Plots the image, with a title.
-    
     '''
 
-    import matplotlib.pyplot as plt
-    import matplotlib.image as mpimg
-
-    # Read the image
-    image = mpimg.imread(image)
-
-    # Plot the image
+    if isinstance(image_object, str):
+        image = mpimg.imread(image_object)
+    elif isinstance(image_object, Tensor):
+        image = image_object.numpy().astype(np.uint8)
+    elif isinstance(image_object, np.ndarray):
+        image = image_object
+    else:
+        raise ValueError("Input must be a file path, numpy array, or tensor.")
+    
     plt.imshow(image)
     plt.title(title)
     plt.axis('off')
@@ -55,6 +47,22 @@ def show_resized_await(
         image (Union[np.ndarray, Any]): The image to display.
         title (str): Window title for the image display.
     """
+
+    def _get_screen_size(
+    ) -> Tuple[int, int]:
+        """
+        Returns the screen width and height using tkinter (cross-platform).
+
+        Returns:
+            Tuple[int, int]: (width, height) of the screen.
+        """
+        root = tk.Tk()
+        root.withdraw()  # Hide the main window
+        width = root.winfo_screenwidth()
+        height = root.winfo_screenheight()
+        root.destroy()
+        return width, height
+
     # Convert TensorFlow tensor to NumPy array (if needed)
     if not isinstance(image, np.ndarray):
         image = image.numpy()
@@ -63,7 +71,7 @@ def show_resized_await(
     image_bgr: np.ndarray = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
 
     # Get screen dimensions
-    screen_width, screen_height = get_screen_size()
+    screen_width, screen_height = _get_screen_size()
 
     # Image dimensions
     img_height, img_width = image_bgr.shape[:2]

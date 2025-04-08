@@ -1,6 +1,5 @@
 import keras
 import tensorflow as tf
-from typing import List
 from utils.constants import IMAGE_SIZE_STANDARD
 
 def resize_image( 
@@ -21,7 +20,10 @@ def resize_image(
     if smart:
         return keras.preprocessing.image.smart_resize(image,IMAGE_SIZE_STANDARD[model])
     else:    
-        return tf.image.resize(image, IMAGE_SIZE_STANDARD[model])
+        image = tf.image.decode_jpeg(image, channels=3) 
+        image = tf.image.resize(image, IMAGE_SIZE_STANDARD[model]) 
+        
+        return image
 
 def rotate_image(
     image: tf.Tensor,
@@ -40,3 +42,6 @@ def rotate_image(
     for _ in range(rotate):
         image = tf.image.rot90(image)
     return image
+
+def load_image(img_path):
+    return keras.utils.load_img(img_path)
