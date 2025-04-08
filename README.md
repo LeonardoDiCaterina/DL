@@ -18,18 +18,9 @@ MIC uses a deep convolutional neural network to classify images of animals. The 
     - family: the family of the species ----->  target variable
     - file_path: the path to the image of the species 
 
-# 3. Getting started
+# 3. Setup
 
-## 3.1. For Developers
-
-To get started you may build the environment using the requirements.yaml file, on your preferred conda workstation, then run the ingestion.py. and read the versioning rules and guidelines section of this document, then finally check out the TODO section.
-
-## 3.2 For Teachers and others
-
-You may follow the same steps as described before creating the environment using conda, or similar, and running ingestion.py, and then run main.py. Running main allows you to:
-	- access the pre-trained models stored in ".pkl"'s in the /pickles directory. 
-	- re-train any of the models presented here and then use it.
-	- Both retrained models,  the models already present can be used to classify new images - to do this, either provide a single path, a list of paths or a .csv file containing paths, alternatively, it can also ingest URLs, this fails if the resulting object cannot be converted to an image file.
+To setup this project on you local machine make sure you have pip installed and run "pip install .".
 	
 # 4. Rules and Guidelines
 

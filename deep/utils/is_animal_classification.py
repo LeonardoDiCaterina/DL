@@ -1,7 +1,6 @@
 import pandas as pd
 import tensorflow as tf
-from animal_classification_funcs import show_image
-
+from deep.utils.animal_classification_funcs import show_image
 
 path = '../data'
 df = pd.read_csv(path + '/metadata.csv')
