@@ -2,7 +2,6 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 
 
-
 def preprocess_image(image, final_size= [244,244], rotate = 0):
 
     '''

@@ -1,0 +1,16 @@
+README.md
+setup.py
+deep/deep.egg-info/PKG-INFO
+deep/deep.egg-info/SOURCES.txt
+deep/deep.egg-info/dependency_links.txt
+deep/deep.egg-info/requires.txt
+deep/deep.egg-info/top_level.txt
+deep/models/__init__.py
+deep/utils/__init__.py
+deep/utils/animal_classification_funcs.py
+deep/utils/image_prep.py
+deep/utils/is_animal_classification.py
+deep/utils/output_space.py
+deep/utils/tinder_input.py
+deep/utils/pkg_mgmt/__init__.py
+deep/utils/pkg_mgmt/_make_dependencies.py

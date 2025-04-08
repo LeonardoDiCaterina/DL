@@ -8,14 +8,3 @@
 		more complex labels.
 
 # TODO: Deadline (Monday 14:30, meeting time)
-##
-## Paulo M. -  Design pipeline compliant with agreed upon ingestion schema, that is capable of transferlearning.
-##	Includes: data ingestion, training routine, testing and efficient transfering
-##
-## Beatriz F. - Apply tinder_input.py to images to obtain binary labelling (animal, non-animal)
-##
-## Liza N. et. Leonardo C - Writting folder restructuring function that is compatible with Keras ingestion methods
-## reviewing, preprocessing literature, and implementing adequate preprocessing methodology.
-##
-## ELdar M. - Reviewing and selecting a suitable architecture for domain task, of binary computer vision task
-## animal non-animal classification.

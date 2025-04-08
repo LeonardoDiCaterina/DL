@@ -3,30 +3,10 @@ import subprocess
 
 # Ensure required dependencies are installed before proceeding
 try:
-    from setuptools import setup, find_packages, Extension
+    from setuptools import setup, find_packages
 except ImportError:
     subprocess.check_call(["pip", "install", "setuptools"])
-    from setuptools import setup, find_packages, Extension  # Retry import
-
-# try:
-#     from Cython.Build import cythonize
-# except ImportError:
-#     subprocess.check_call(["pip", "install", "Cython"])
-#     from Cython.Build import cythonize  # Retry import
-
-
-# # Finds all instances of '.pyx' files inside 'cifo'
-# def find_pyx_files(package_dir="cifo"):
-#     """Find all .pyx files in the package and return them as Extension modules."""
-#     pyx_files = []
-#     for root, _, files in os.walk(package_dir):
-#         for file in files:
-#             if file.endswith(".pyx"):
-#                 module_path = os.path.splitext(os.path.relpath(os.path.join(root, file), package_dir))[0]
-#                 module_name = module_path.replace(os.path.sep, ".")  # Convert to module format
-#                 pyx_files.append(Extension(f"cifo.{module_name}", sources=[os.path.join(root, file)]))
-#     return pyx_files
-
+    from setuptools import setup, find_packages
 
 def read_requirements():
     try:
@@ -49,5 +29,5 @@ setup(
     packages=find_packages(where='deep'),
     package_dir={'': 'deep'},
     install_requires=read_requirements(),
-   # ext_modules=cythonize(find_pyx_files("deep"))
+    python_requires='==3.11.11'
 )
