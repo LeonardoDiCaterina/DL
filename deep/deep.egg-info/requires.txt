@@ -1,10 +1,10 @@
-tensorflow
-opencv-python
 keras
-matplotlib
-numpy
+tensorflow
 pandas
-seaborn
-setuptools
+numpy
 scikit-learn
+matplotlib
+opencv-python
 tqdm
+seaborn
+ipykernel

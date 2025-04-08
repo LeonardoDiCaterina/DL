@@ -2,10 +2,7 @@
 
 
 import pandas as pd
-import numpy as np
-from keras.utils import to_categorical
-
-
+from keras import to_categorical
 
 
 def create_output_space(df):
@@ -18,7 +15,6 @@ def create_output_space(df):
     Returns:
         df (pd.DataFrame): dataframe with the target values for 'phylum' and 'family'
     """
-    
     
     u_phylum = df['phylum'].unique()
     u_family = df['family'].unique()
