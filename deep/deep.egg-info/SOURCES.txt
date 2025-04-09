@@ -7,7 +7,7 @@ deep/deep.egg-info/requires.txt
 deep/deep.egg-info/top_level.txt
 deep/models/__init__.py
 deep/utils/__init__.py
-deep/utils/binary_labeller.py
+deep/utils/_binary_labeller.py
 deep/utils/constants.py
 deep/utils/display_utils.py
 deep/utils/output_space.py

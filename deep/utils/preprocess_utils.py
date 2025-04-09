@@ -4,8 +4,8 @@ from utils.constants import IMAGE_SIZE_STANDARD
 
 def resize_image( 
     image: tf.Tensor,
-    smart: bool = False,
-    model: str = 'VGG16'
+    model: str = 'VGG16',
+    smart: bool = False
 ) -> tf.Tensor:
     """
     Resizes the image to the target size.
