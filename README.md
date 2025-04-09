@@ -30,27 +30,25 @@ As this is a small team, authorship and blame are only considered in development
 
 ### 0. article # Pull before Push
 Pulling before pushing is a good rule of thumb to avoid merge conflicts. Moreover, as forking is discouraged, to avoid having file conflicts it is forceful that contributors inform others of their current tasks, at their beginning and upon pushing.
+r all developers, thus allowing all relative paths to work in a workstation agnostic manner. 
 
-### 1 article # Directory Tree
-The directory tree is the same for all developers, thus allowing all relative paths to work in a workstation agnostic manner. 
-
-### 2 article # Paths
+### 1 article # Paths
 All paths must be relative, and never point outside of the directory, unless, in those situations where the path provided is in the form of a URL, that points to a web resource - preferably, one for which the URL link is expected to be healthy for the unforeseeable future. 
 
-### 3 article # Data & Other Large Volumes
+### 2 article # Data & Other Large Volumes
 	# a. As it is heavily discouraged by GitHub all of the data needed for the project must be assigned to the .gitignore file, that is, no data should ever be uploaded to the git.
 	# b. The data and all transformations must be obtainable using scripts provided within this repository.
     
-### 4 article # Naming conventions
+### 3 article # Naming conventions
     # a. Naming conventions are not optional.
     # b. notebooks and models inside directories /notebooks and /development are subject to A. "Naming Convention for Code Development". 
     # c. scripts inside directory /scripts are subject to B. "Naming Convention for Utilities".
     # d. model files inside directory /models are subject to C. "Naming Convention for Models"
     
-## 4.2 Guidelines for Directories with Specific Needs
+## 3.2 Guidelines for Directories with Specific Needs
 This section briefly covers the special guidelines that must be observed in specific directories with special needs. 
 
-## 4.2.1
+## 3.2.1
 #### /Models
 This directory contains:
     - the current best **performing models*** according to the **Loss Metric**, which follow Naming Convention A (see Naming Conventions below). 
