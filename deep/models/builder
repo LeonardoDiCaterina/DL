@@ -99,8 +99,9 @@ class SimpleKeras(Model):
         return parsed_layers
 
 
+
 # Create the model
-model = AbstractCNN.build_model(instructions, base_model=custom_base_model)
+model = SimpleKeras.build_model(instructions, base_model=custom_base_model)
 
 # Compile the model
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
