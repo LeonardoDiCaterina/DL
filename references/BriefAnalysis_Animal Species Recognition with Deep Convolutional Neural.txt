@@ -1,0 +1,22 @@
+/****************************************************
+
+Author: 		Beatriz Fonseca
+Last edited:	09.04.2025
+
+****************************************************/
+
+Multi-class (3) imbalanced animal dataset
+
+
+Process:
+- rotation (180 and 90 º) for oversampling
+- data split (78 - 16 - 6)
+- augmentation - data generator function by keras
+
+
+Notes:
+- performed binary classification for each class
+- used "only background" images as another class
+- performed multi-class classification (using the background class as well)
+
+- "Without applying augmentation, CNN-1 provided remarkable training, validation, and testing accuracy for the given samples with no overfitting issues (Figure 9a). On the other hand, we observed a large generalization gap in the learning curve while training with a high augmentation threshold (Figure 9b)." - CNN-1 is self-trained model
