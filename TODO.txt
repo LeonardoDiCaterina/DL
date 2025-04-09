@@ -6,5 +6,8 @@
 	Medium Term(Next Friday): 
 		- Successfully training a model on animal, vis. no animal, and applying transfer learning to a
 		more complex labels.
+		- test new custom cost function
+		- kickstart custom callback implementation
+		- select possible architures
 
-# TODO: Deadline (Monday 14:30, meeting time)
+# TODO: Deadline (Thursday 21:30, meeting time)
