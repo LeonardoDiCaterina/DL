@@ -1,0 +1,109 @@
+from keras import Model, layers
+from keras.api.layers import (
+    Input,
+    Dense,
+    Flatten,
+    Concatenate,
+    MaxPooling2D,
+    Conv2D,
+    LeakyReLU,
+)
+from typing import (
+    List,
+    Dict,
+    Any,
+    Tuple,
+    Optional,
+)
+LAYER_MAPPING = {
+    "Conv2D": Conv2D,
+    "MaxPooling2D": MaxPooling2D,
+    "Flatten": Flatten,
+    "Dense": Dense,
+    "LeakyReLU": LeakyReLU,
+    "Concatenate": Concatenate # TODO: solve this layer
+}
+
+class SimpleKeras(Model):
+    def __init__(
+        self
+        , instructions: Dict[str, Any]
+        , base_model: Optional[Model] = None
+        , **kwargs
+    ):
+        """
+        Initialize the model with instructions and optionally a pre-trained model.
+        
+        :param instructions: Dictionary containing model instructions.
+        :param base_model: Pre-trained model (e.g., VGG16) to use as the base model, if available.
+        :param kwargs: Additional keyword arguments for any other configuration.
+        """
+        super().__init__(**kwargs)
+        self.instructions = instructions
+        self.base_model = base_model
+        self.kwargs = kwargs
+        # check if is trainable is in the arguments
+        # if yes, invoke it, else set to False.
+
+    @classmethod
+    def build_model(
+        cls, instructions: Dict[str, Any]
+        , base_model: Optional[Model] = None
+    ) -> Model:
+
+        input_args = instructions["input"]
+        layers_instructions = instructions["layers"]
+        n_classes = instructions["n_classes"]
+
+        # If base_model is provided, use it; otherwise, don't use any pre-trained model
+        if base_model:
+            input_layer = Input(**input_args)
+            x = base_model(input_layer)  # Use the base model for feature extraction
+        else:
+            input_layer = Input(**input_args)
+            x = input_layer  # If no base model, start directly with the input layer
+
+        instance = cls(instructions, base_model=base_model)
+        
+        # Load and parse the layers using the instruction parser
+        parsed_layers = instance._parse_instructions(layers_instructions)
+
+        # Build the model with the parsed layers
+        x = parsed_layers[0](x)
+        for layer in parsed_layers[1:]:
+            x = layer(x)
+
+        # Add final output layer
+        output_layer = Dense(n_classes, activation="softmax", name="classification_head")(x) # TODO: Fix this layer
+
+        return Model(inputs=input_layer, outputs=output_layer, name="fine_tuned_cnn")
+
+    def _parse_instructions(
+        self
+        , layers_instructions: List[Tuple[str, Dict[str, Any]]]
+    ) -> List[layers.Layer]:
+        """
+        Parse the instructions and return the corresponding layers.
+        """
+        parsed_layers = []
+
+        for layer_type, params in layers_instructions:
+            if layer_type == "concatenate":
+                inputs = [getattr(self, input_name) for input_name in params["inputs"]]
+                layer_instance = LAYER_MAPPING[layer_type]()([inputs])
+            else:
+                layer_instance = LAYER_MAPPING[layer_type](**params)
+            
+            parsed_layers.append(layer_instance)
+
+        return parsed_layers
+
+
+# Create the model
+model = AbstractCNN.build_model(instructions, base_model=custom_base_model)
+
+# Compile the model
+model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+
+# Train the model (example)
+# model.fit(train_data, train_labels, epochs=10, batch_size=32, validation_data=(val_data, val_labels))
