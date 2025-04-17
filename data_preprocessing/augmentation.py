@@ -4,26 +4,30 @@ import uuid
 import pandas as pd
 from data_utils import get_n_copies
 from utils.io_utils import load_image, save_image, copy_and_rename_file
+from utils.modification_utils import distinct_multiple_transformations
 from logger import get_logger
 from config import OVERSAMPLE, LABEL_COL
 
 logger = get_logger(__name__)
 
 def rename_and_save(df: pd.DataFrame, origin_root: str, dest_root: str, oversample: bool = True):
-    logger.info(f"oversampling: {oversample}")
-    logger.info(f"OVERSAMPLE: {OVERSAMPLE}")
     
-    if oversample == True:
-        # not implemented yet
-        logger.warning("Oversampling is not implemented yet, set oversample=False to skip this step")
-        return
-    logger.debug(f"origin_root: {origin_root}-- dest_root: {dest_root}")
+    logger.info("Starting oversampling and saving process")
+    logger.info(f"origin_root: {origin_root} --> dest_root: {dest_root}")
     logger.debug(f"Dataframe shape: {df.shape}")
     logger.debug(f"Dataframe columns: {df.columns}")
     logger.debug(f"OVERSAMPLE: {OVERSAMPLE}")
-    logger.debug("Starting oversampling and saving process")
-    df['copies'] = get_n_copies(df[f'{LABEL_COL}']).reindex(df[f'{LABEL_COL}']).values
 
+    label_counts = get_n_copies(df[LABEL_COL])
+    aligned_copies = label_counts.reindex(df[LABEL_COL])
+
+    n_missing = aligned_copies.isnull().sum()
+    if n_missing > 0:
+        logger.warning(f"{n_missing} label(s) had no matching copy count. Filling missing values with 0.")
+
+    aligned_copies = aligned_copies.fillna(0).astype(int)
+    df['copies'] = aligned_copies.values
+    
     for index_row, row in df.iterrows():
         label = row[f'{LABEL_COL}']
         src = os.path.join(origin_root, row['file_path'])
@@ -32,40 +36,33 @@ def rename_and_save(df: pd.DataFrame, origin_root: str, dest_root: str, oversamp
             logger.warning(f"Source file does not exist: {src}")
             continue
         
-        if not oversample:
-            logger.debug(f"Copying without oversampling for {label}")
-            dest_dir = os.path.join(dest_root, label)
-            os.makedirs(dest_dir, exist_ok=True)
-            new_filename = f"{label}_{str(index_row).zfill(6)}00.jpg"
-            copy_and_rename_file(src, dest_dir, new_filename)
-            continue
-        if row['copies'] <= 1:
-            logger.debug(f"No oversampling needed for {label}, copies: {row['copies']}")
-            new_filename = f"{label}_{str(index_row).zfill(6)}00.jpg"
-            copy_and_rename_file(src, dest_root, new_filename)
-            continue
-        logger.debug(f"Oversampling {label}, copies-: {row['copies']}")
-        # Oversample the image
-        # Assuming the oversampling process involves creating multiple copies
+        logger.debug(f"Copying without oversampling for {label}")
+        dest_dir = os.path.join(dest_root, label)
+        os.makedirs(dest_dir, exist_ok=True)
         new_filename = f"{label}_{str(index_row).zfill(6)}00.jpg"
-        copy_and_rename_file(src, dest_root, new_filename)
-        continue
-        
-        
-        
-    """        if row['copies'] < 5:
-            for index_copy in range(row['copies']):
-                dest_dir = os.path.join(dest_root, label)
-                os.makedirs(dest_dir, exist_ok=True)
-                new_filename = f"{label}_{str(index_row).zfill(6)}{str(index_copy).zfill(2)}.jpg"
-                copy_and_rename_file(src, dest_dir, new_filename)
-                logger.debug(f"Saved oversampled image: {new_filename}")
-        
-        for _ in range(row['copies']):
-            dest_dir = os.path.join(dest_root, label)
-            os.makedirs(dest_dir, exist_ok=True)
-            new_filename = f"{label}_{uuid.uuid4().hex}.jpg"
-            image = load_image(src)
-            save_image(os.path.join(dest_dir, new_filename), image)
+        try:
+            # Copy the original file to the destination directory
+            copy_and_rename_file(src, dest_dir, new_filename)
+        except Exception as e:
+            logger.error(f"Error copying file {src} to {dest_dir}: {e}")
+            continue
+        n_children = 0
+        if OVERSAMPLE == True:
+            n_children = min(5, row['copies'])
+    
+        # Load the image
+        image = load_image(src)
+        # Apply distinct transformations
+        transformed_images = distinct_multiple_transformations(image, n_children)
+        # Save the transformed images
+        for index_copy in range(n_children):
+            new_filename = f"{label}_{str(index_row).zfill(6)}{str(index_copy).zfill(2)}.jpg"
+            try:
+                save_image(os.path.join(dest_dir, new_filename), transformed_images[index_copy])
+            except Exception as e:
+                logger.error(f"Error saving transformed image {new_filename}: {e}")
+                continue
             logger.debug(f"Saved oversampled image: {new_filename}")
-    """
+            
+    logger.info("renaming and saving process completed")
+
