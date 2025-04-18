@@ -34,9 +34,22 @@ class DistanceQuantile(tf.keras.metrics.Metric):
 # MulticlassDistanceQuantile
 
 class MulticlassDistanceQuantile(tf.keras.metrics.Metric):
-    def __init__(self, quantile_level=0.25, name='multiclass_distance_quantile', **kwargs):
-        super().__init__(name=name, **kwargs)
+    def __init__(self, quantile_level=0.25, name='25th_quantile', **kwargs):
+        
         self.quantile_level = quantile_level
+        if quantile_level < 0.0 or quantile_level > 1.0:
+            raise ValueError("quantile_level must be between 0.0 and 1.0")
+        
+        if not isinstance(quantile_level, float):
+            raise TypeError("quantile_level must be a float")
+        if quantile_level == 0.0:
+            raise ValueError("quantile_level cannot be 0.0")
+        if quantile_level == 1.0:
+            raise ValueError("quantile_level cannot be 1.0")
+        if quantile_level != 0.25:
+            name = f"{(quantile_level * 100):.2f }th_quantile"
+        super().__init__(name=name, **kwargs)
+        
         self.last_value = self.add_weight(name='last_value', initializer='zeros')
         
     def compute_quantile(self, distances):
