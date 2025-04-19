@@ -7,6 +7,7 @@ from utils.io_utils import load_image, save_image, copy_and_rename_file
 from utils.modification_utils import distinct_multiple_transformations
 from logger import get_logger
 from config import OVERSAMPLE, LABEL_COL
+from tqdm import tqdm
 
 logger = get_logger(__name__)
 
@@ -31,7 +32,8 @@ def save_to_split_to_directory(df: pd.DataFrame, origin_root: str, dest_root: st
     aligned_copies = aligned_copies.fillna(0).astype(int)
     df['copies'] = aligned_copies.values
     
-    for index_row, row in df.iterrows():
+    
+    for index_row, row in tqdm(df.iterrows(), total=len(df)):
         label = row[f'{LABEL_COL}']
         # src is ehere the original image is stored
         src = os.path.join(origin_root, row['file_path'])

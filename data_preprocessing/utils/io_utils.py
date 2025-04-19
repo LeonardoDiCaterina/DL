@@ -2,13 +2,15 @@ import tensorflow as tf
 import shutil
 import os
 from logger import get_logger
+from PIL import Image
 
 logger = get_logger(__name__)
 
-def load_image(filepath: str) -> tf.Tensor:
+
+def load_image(filepath: str) -> Image.Image:
     logger.debug(f"Loading image: {filepath}")
-    image = tf.io.read_file(filepath)
-    return tf.image.decode_jpeg(image, channels=3)
+    return Image.open(filepath).convert("RGB")
+
 
 def save_image(dest_path: str, image: tf.Tensor):
     logger.debug(f"Saving image to: {dest_path}")
