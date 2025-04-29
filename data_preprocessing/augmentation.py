@@ -1,12 +1,10 @@
 import os
-import sys
-import uuid
 import pandas as pd
-from data_utils import get_n_copies
-from utils.io_utils import load_image, save_image, copy_and_rename_file
-from utils.modification_utils import distinct_multiple_transformations
-from logger import get_logger
-from config import OVERSAMPLE, LABEL_COL
+from .data_utils import get_n_copies
+from .utils.io_utils import load_image, save_image, copy_and_rename_file
+from .utils.modification_utils import distinct_multiple_transformations
+from .logger import get_logger
+from .preprocessing_config import OVERSAMPLE, LABEL_COL
 from tqdm import tqdm
 
 logger = get_logger(__name__)

@@ -1,8 +1,8 @@
 from functools import reduce
 from sklearn.model_selection import train_test_split, StratifiedKFold
 import pandas as pd
-from data_preprocessing.logger import get_logger
-from data_preprocessing.preprocessing_configcessing_config import LABEL_COL
+from .logger import get_logger
+from .preprocessing_config import LABEL_COL
 
 logger = get_logger(__name__)
 

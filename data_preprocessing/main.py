@@ -1,8 +1,8 @@
 import pandas as pd
-from config import CSV_PATH, DATA_DIR, DEST_DIR, N_SPLITS, TEST_SIZE, OVERSAMPLE,LOG_LEVEL, LABEL_COL
-from splitting import create_split
-from augmentation import save_to_split_to_directory
-from logger import get_logger
+from preprocessing_config import CSV_PATH, DATA_DIR, DEST_DIR, N_SPLITS, TEST_SIZE, OVERSAMPLE,LOG_LEVEL, LABEL_COL
+from .splitting import create_split
+from .augmentation import save_to_split_to_directory
+from .logger import get_logger
 import os
 
 logger = get_logger(__name__)

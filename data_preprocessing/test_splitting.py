@@ -1,5 +1,5 @@
 import pandas as pd
-from splitting import create_split
+from .splitting import create_split
 
 
 

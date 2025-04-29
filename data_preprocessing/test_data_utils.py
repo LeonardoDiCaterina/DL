@@ -1,6 +1,6 @@
 
 import pandas as pd
-from data_utils import class_proportion_analyzer, get_n_copies
+from .data_utils import class_proportion_analyzer, get_n_copies
 
 def test_class_proportion_analyzer_boolean():
     s = pd.Series(['a'] * 8 + ['b'] * 1 + ['c'] * 1)

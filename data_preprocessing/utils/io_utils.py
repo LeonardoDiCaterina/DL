@@ -1,7 +1,7 @@
 import tensorflow as tf
 import shutil
 import os
-from logger import get_logger
+from ..logger import get_logger
 from PIL import Image
 
 logger = get_logger(__name__)

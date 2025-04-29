@@ -1,4 +1,4 @@
-from data_preprocessing.preprocessing_configcessing_config import DEST_DIR, N_SPLITS, LOG_LEVEL
+from .preprocessing_config import DEST_DIR, N_SPLITS, LOG_LEVEL
 from data_preprocessing.logger import get_logger
 import os
 import tensorflow as tf
