@@ -1,5 +1,5 @@
 import pandas as pd
-from preprocessing_config import CSV_PATH, DATA_DIR, DEST_DIR, N_SPLITS, TEST_SIZE, OVERSAMPLE,LOG_LEVEL, LABEL_COL
+from .preprocessing_config import CSV_PATH, DATA_DIR, DEST_DIR, N_SPLITS, TEST_SIZE, OVERSAMPLE,LOG_LEVEL, LABEL_COL
 from .splitting import create_split
 from .augmentation import save_to_split_to_directory
 from .logger import get_logger
@@ -43,7 +43,7 @@ if __name__ == '__main__':
     logger.info("Renaming and saving test set")
     # test_df is a list of tuples (path, label)
     fold_dir = os.path.join(DEST_DIR, 'test')
-    save_to_split_to_directory(test_df, DATA_DIR, fold_dir, oversample=OVERSAMPLE)
+    save_to_split_to_directory(test_df, DATA_DIR, fold_dir, oversample=False)
     fold_metadata_name = os.path.join(test_dir, 'metadata_test.csv')
     test_df.to_csv(fold_metadata_name, index=False)
     logger.info(f"Saved test metadata to {fold_metadata_name}")
