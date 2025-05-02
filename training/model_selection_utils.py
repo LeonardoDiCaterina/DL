@@ -1,4 +1,4 @@
-# training/train_model.py
+# training/model_selection_utils.py
 import tensorflow as tf
 import matplotlib.pyplot as plt
 import numpy as np
@@ -10,7 +10,7 @@ from tabulate import tabulate
 import gc # Garbage collector interface
 
 import itertools 
-from training.training_config import NUM_CLASSES, INPUT_SHAPER, N_EPOCHS_4CV, LOG_LEVEL
+from training.training_config import NUM_CLASSES, INPUT_SHAPE, N_EPOCHS_4CV
 
 logger = get_logger(__name__)
 
@@ -27,7 +27,7 @@ from tensorflow.keras.layers import (
 def random_saturation(x):
         return tf.image.random_saturation(x, lower=0.8, upper=1.2)
 
-def build_model(modelname = 'MobileNetV2', freeze_until = 0, dense_layers = [], input_shape = (256, 256, 3), num_classes = 202, dropout_rate=0.5):
+def build_model(modelname = 'MobileNetV2', freeze_until = 0, dense_layers = [], input_shape = INPUT_SHAPE, num_classes = NUM_CLASSES, dropout_rate=0.5, verbose = False):
     """
     Builds and returns an image classification model based on MobileNetV2 with optional fine-tuning and a custom dense head
 
@@ -80,8 +80,83 @@ def build_model(modelname = 'MobileNetV2', freeze_until = 0, dense_layers = [], 
     outputs = Dense(num_classes, activation='softmax')(x)
 
     model = Model(inputs=inputs, outputs=outputs)
-    logger.info(f'Model summary:\n{model.summary()}')
+    if verbose:
+        print(f'Building model summary:\n{model.summary()}')
     return model
+
+
+def build_model_turnicated (modelname='MobileNetV2', freeze_until=0, dense_layers=[], input_shape=(256, 256, 3), num_classes=202, dropout_rate=0.5, truncate_percentage=0.0, verbose = False):
+    """
+    Builds and returns an image classification model based on MobileNetV2 with optional fine-tuning,
+    a custom dense head, and optional model truncation.
+
+    Args:
+        modelname (str): Name of the base model to use. Options are 'MobileNetV2' and 'ResNet50'.
+        freeze_until (int): Index of the layer until which to freeze the MobileNetV2 base (exclusive).
+        dense_layers (list of int): List specifying the number of units for each dense layer after the base model.
+        input_shape (tuple): Shape of the input images, e.g., (height, width, channels).
+        num_classes (int): Number of output classes for the final classification layer.
+        dropout_rate (float, optional): Dropout rate applied after each dense layer. Default is 0.5.
+        truncate_percentage (float, optional): Percentage (0 to 1) of the model to truncate. Default is 0.0 (no truncation).
+
+    Returns:
+        keras.Model: A compiled Keras model ready for training.
+    """
+
+    inputs = Input(shape=input_shape)
+
+    logger.info(f'Building model with input shape: {input_shape}')
+    # Data augmentation block
+    x = RandomFlip("horizontal")(inputs)
+    x = RandomContrast(0.1)(x)
+    x = Lambda(random_saturation, name="random_saturation")(x)
+
+    # Base model
+    if modelname == 'MobileNetV2':
+        base_model = MobileNetV2(weights='imagenet', include_top=False, input_tensor=x)
+        logger.info(f'Using {modelname} as base model')
+    elif modelname == 'ResNet50':
+        base_model = tf.keras.applications.ResNet50(weights='imagenet', include_top=False, input_tensor=x)
+        logger.info(f'Using {modelname} as base model')
+    else:
+        raise ValueError(f"Unsupported model name: {modelname}. Supported models are 'MobileNetV2' and 'ResNet50'.")
+
+    # Freeze desired layers
+    for layer in base_model.layers[:freeze_until]:
+        layer.trainable = False
+
+    logger.info(f'Freezing layers up to index {freeze_until} in the base model')
+    for layer in base_model.layers[freeze_until:]:
+        layer.trainable = True
+    logger.info(f'Unfreezing layers from index {freeze_until} in the base model')
+
+    x = base_model.output
+    x = GlobalAveragePooling2D()(x)
+    # Dense Layers
+    if dense_layers:
+        logger.info(f'Adding {len(dense_layers)} dense layers with dropout rate {dropout_rate}')
+        for units in dense_layers:
+            x = Dense(units, activation='relu')(x)
+            x = Dropout(dropout_rate)(x)
+    outputs = Dense(num_classes, activation='softmax')(x)
+
+    model = Model(inputs=inputs, outputs=outputs)
+
+    # Truncate model if specified
+    if 0 < truncate_percentage < 1:
+        num_layers_to_truncate = int(len(model.layers) * truncate_percentage)
+        if num_layers_to_truncate > 0:
+            new_model_outputs = model.layers[-(num_layers_to_truncate+1)].output #get the layer before truncation
+            new_model = Model(inputs=model.inputs, outputs=new_model_outputs)
+            logger.info(f'Truncating model by {truncate_percentage * 100}%.  {num_layers_to_truncate} layers removed. New model layers: {len(new_model.layers)}')
+            logger.info(f'New model summary:\n{new_model.summary()}')
+            return new_model
+        else:
+            logger.info(f'Truncate percentage {truncate_percentage} results in no layers being truncated.')
+    if verbose:
+        print(f'Model summary:\n{model.summary()}')
+    return model
+
 
 def build_param_grid(modelnames, freeze_options, dense_options, learning_rates):
     """
@@ -100,17 +175,17 @@ def build_param_grid(modelnames, freeze_options, dense_options, learning_rates):
     return grid
 
 
-
-def evaluated_cross_val(train_folds, input_shape, num_classes,
-                       param_grid, epochs=5):
+def evaluated_cross_val(train_folds, param_grid, num_classes = NUM_CLASSES, input_shape = INPUT_SHAPE,
+                        epochs=N_EPOCHS_4CV):
     """
     Evaluates different model configurations using cross-validation.
 
     Args:
         train_folds (list): List of training datasets for cross-validation.
-        input_shape (tuple): Shape of the input images.
-        num_classes (int): Number of output classes.
         param_grid (list): List of model configurations to evaluate.
+        num_classes (int): Number of output classes.
+        input_shape (tuple): Shape of the input images.
+
     """
     models_list = []
     results = []
@@ -194,9 +269,6 @@ def evaluated_cross_val(train_folds, input_shape, num_classes,
     print(tabulate(results_df, headers='keys', tablefmt='fancy_grid', floatfmt=".4f"))
 
     return models_list, results_df
-
-
-
 
 
 
