@@ -7,3 +7,4 @@ TEST_SIZE = 0.2 # it's a ratio therefore has to be between 0 and 1
 OVERSAMPLE = False
 LOG_LEVEL = 'INFO'
 LABEL_COL = 'family'
+OVERCLASS_COL = 'phylum' # set to None if not needed

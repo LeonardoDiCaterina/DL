@@ -1,10 +1,9 @@
 import pandas as pd
-from .preprocessing_config import CSV_PATH, DATA_DIR, DEST_DIR, N_SPLITS, TEST_SIZE, OVERSAMPLE,LOG_LEVEL, LABEL_COL
+from .preprocessing_config import CSV_PATH, DATA_DIR, DEST_DIR, N_SPLITS, TEST_SIZE, OVERSAMPLE,LOG_LEVEL, LABEL_COL, OVERCLASS_COL
 from .splitting import create_split
 from .augmentation import save_to_split_to_directory
 from .logger import get_logger
 import os
-
 logger = get_logger(__name__)
 os.environ['LOG_LEVEL'] = LOG_LEVEL  
 
@@ -18,6 +17,17 @@ if __name__ == '__main__':
     # read the CSV
     logger.info("Starting preprocessing pipeline")
     df = pd.read_csv(CSV_PATH)[['file_path', LABEL_COL]]
+    
+    if OVERCLASS_COL != None:
+        df_class_overclass = pd.read_csv(CSV_PATH)
+        if OVERCLASS_COL not in df_class_overclass.columns:
+            raise ValueError(f"Column {OVERCLASS_COL} not found in the CSV file, possible values are {df.columns}")
+        # create a lookup table for family and phylum
+        
+        family_phylum_lookup = df_class_overclass[[LABEL_COL, OVERCLASS_COL]].drop_duplicates()
+        # save the lookup table to a CSV file
+        family_phylum_lookup.to_csv(os.path.join(DEST_DIR, 'lookup_table.csv'), index=False)
+    
     logger.info(f"Loaded metadata with {len(df)} entries")
     
     folds, test_df = create_split(df['file_path'], df[LABEL_COL], n_folds=N_SPLITS, test_ratio=TEST_SIZE, random_state=42)
